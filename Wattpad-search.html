@@ -1,11 +1,18 @@
 <head>
   <title>Wattpad-search</title>
+    <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-
+  <h1 class = "main_heading">Enhanced Story Search</h1>
+    
+    <div class="wrapper"> 
+    
   {{> hello}}
+        
+        {{> search}}
+    </div>
 
 </body>
 
@@ -14,4 +21,21 @@
     <input type="text" id="categoryId" />
     <input type="submit" value="submit" />
   </form>
+</template>
+
+
+<template name ="search">
+
+<form  class = "form_items">
+    Enter the query<br><input type="text" size="40" name="search"><br>
+                   <input type="submit" value="Submit" class="submit_button">
+</form>
+
+</template>
+
+
+<template name = "story">
+
+//How the story item should look like on the results page
+
 </template>

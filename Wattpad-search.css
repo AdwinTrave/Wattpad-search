@@ -1,1 +1,21 @@
 /* CSS declarations go here */
+body{
+    font-family: Raleway;
+}
+
+.main_heading{
+    font-size: 2.5em;
+    text-align: center;
+}
+
+#wrapper{
+    position: relative;
+    text-align: center;
+    width: 60%;
+    float: right;
+}
+
+.form_items{
+    font-size: 1.5em;
+    text-align: center;
+}
