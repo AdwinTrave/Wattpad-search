@@ -1,19 +1,16 @@
-if (Meteor.isClient) {
+Template.hello.events({
+  'submit #getStories': function (event, template) {
+    //prevent default behavior of refreshing the page
+    event.preventDefault();
 
-  Template.hello.events({
-    'submit #getStories': function (event, template) {
-      //prevent default behavior of refreshing the page
-      event.preventDefault();
+    var category = $("#categoryId").val();
 
-      var category = $("#categoryId").val();
+    /* Getting stories by category */
+    console.log("Getting category id: " + category);
 
-      /* Getting stories by category */
-      console.log("Getting category id: " + category);
-
-      getStories(category);
-    }
-  });
-}
+    getStories(category);
+  }
+});
 
 function setAuthorization(xhr)
 {

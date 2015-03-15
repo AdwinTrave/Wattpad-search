@@ -16,3 +16,7 @@ Quoting guys from Meteoric (this is the same scss case here):
 "Due to a current limitation of the Meteor packaging system, the above paths may not exist the first time you run your Meteor app after installing this package. This will cause an error saying the file to import was not found. This may also occur if you run meteor reset. Restarting your app should fix this problem. See meteor/meteor#2606 and meteor/meteor#2796 for more info."
 
 If you get this issue stop meteor and run it again. Then it should go away.
+
+## App
+### Stopwords
+Original stopwords file from: https://github.com/6/stopwords/blob/master/dist/en.json
