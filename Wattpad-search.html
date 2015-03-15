@@ -20,12 +20,15 @@
 
 
 <template name ="search">
-  <form>
+  <form id="searchForm">
     <fieldset>
       <legend>
-        Enhanced Wattpad Story Search
+          <h2>Enhanced Wattpad Story Search</h2>
       </legend>
-      <input type="text" placeholder="Search">
+         <div class="row content">
+              <input id="searchTerm" type="text" placeholder="Enter the search query">
+              <input type="submit" value = "Submit" class="button small radius">
+            </div>
     </fieldset>
   </form>
 </template>
