@@ -6,9 +6,8 @@
 
 <body>
     <div class="wrapper">
-        {{> search}}
+    {{> search}}
     </div>
-
 </body>
 
 <template name="hello">
@@ -25,13 +24,15 @@
       <legend>
           <h2>Enhanced Wattpad Story Search</h2>
       </legend>
-         <div class="row content">
-              <input id="searchTerm" type="text" placeholder="Enter the search query">
-              <input type="submit" value = "Submit" class="button small radius">
-            </div>
+        
+        <input type="submit" value="Submit" id="submitButton" class="button"/>
+        <div id ="searchFormCont">
+            <input type="text" id="searchTerm" placeholder="Enter the search query"/>
+        </div>        
     </fieldset>
   </form>
 </template>
+
 
 
 <template name = "story">

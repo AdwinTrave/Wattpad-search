@@ -13,6 +13,7 @@ if (Meteor.isClient) {
       getStories(category);
     }
   });
+
 }
 
 function setAuthorization(xhr)

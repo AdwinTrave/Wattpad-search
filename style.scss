@@ -53,3 +53,23 @@ body{
 legend{
     text-align: center;
     }
+
+.wrapper{
+    max-width: 50rem;
+    margin: 0 auto;
+}
+
+#submitButton{
+    float: right;
+    height:  2.3125rem;
+    padding: 2px inherit;
+    margin-left: 0;
+}
+
+#searchFormCont{
+    overflow: hidden; 
+    padding-right: .5em;
+}
+#searchTerm{
+    width: 100%;
+}
