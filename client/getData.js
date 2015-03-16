@@ -8,20 +8,9 @@ Template.hello.events({
     /* Getting stories by category */
     console.log("Getting category id: " + category);
 
-<<<<<<< HEAD:Wattpad-search.js
-      /* Getting stories by category */
-      console.log("Getting category id: " + category);
-
-      getStories(category);
-    }
-  });
-
-}
-=======
     getStories(category);
   }
 });
->>>>>>> origin/master:client/getData.js
 
 function setAuthorization(xhr)
 {
