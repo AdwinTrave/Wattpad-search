@@ -1,12 +1,14 @@
-if (Meteor.isClient) {
+Template.hello.events({
+  'submit #getStories': function (event, template) {
+    //prevent default behavior of refreshing the page
+    event.preventDefault();
 
-  Template.hello.events({
-    'submit #getStories': function (event, template) {
-      //prevent default behavior of refreshing the page
-      event.preventDefault();
+    var category = $("#categoryId").val();
 
-      var category = $("#categoryId").val();
+    /* Getting stories by category */
+    console.log("Getting category id: " + category);
 
+<<<<<<< HEAD:Wattpad-search.js
       /* Getting stories by category */
       console.log("Getting category id: " + category);
 
@@ -15,6 +17,11 @@ if (Meteor.isClient) {
   });
 
 }
+=======
+    getStories(category);
+  }
+});
+>>>>>>> origin/master:client/getData.js
 
 function setAuthorization(xhr)
 {
