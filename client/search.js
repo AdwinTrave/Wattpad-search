@@ -6,30 +6,42 @@ Template.search.events({
     var query = $('#searchTerm').val();
     console.log("Query: " + query);
 
-    //step 1: remove stop words (and Porter-Stemmer)
-    var queryArray = stopWordsRemoval(query);
-    console.log(queryArray);
+    //step 0: tokenize
+    var queryArray = tokenize(query);
 
-    //step 2: identify category
+    //step 1: identify category and remove those words
+    Session.set("categories", null);
     queryArray = categoriesIdentifier(queryArray);
 
-    //step 3: index search
+    //step 2: remove stop words (and Porter-Stemmer)
+    queryArray = stopWordsRemoval(query);
+    console.log("query after stop words and stemmer: " + queryArray);
 
-    //step 4: rank the documents
+    //step 2.5: look again for categories
+    queryArray = categoriesIdentifier(queryArray);
 
-    //step 5: display results - get the documents
+    //step 3: ranked search
+
+    //step 4: display results - get the documents
   }
 });
 
-//compares the inserted string with our
-function stopWordsRemoval(query)
+function tokenize(query)
 {
   //separate query into an array of words
   //use space, columns and dots as dividers
   query = query.trim();
-  var queryArray = query.split(/[\s,?!:;$%&*+()\\-\\^]+/);
-  //console.log(queryArray);
 
+  //to lower case
+  query = query.toLowerCase();
+
+  //split
+  return query.split(/[.,\s\-\/*+!#$%&*\\()\[\]\"\']+(?!\w+])/);
+}
+
+//compares the inserted string with our
+function stopWordsRemoval(query)
+{
   //compare the query array with the stopwords array
   //first get stopwords
   /*var stopwords = HTTP.get(Meteor.absoluteUrl("/stopwords.json"), function(err,result) {
@@ -66,20 +78,33 @@ function stopWordsRemoval(query)
  */
 function categoriesIdentifier(queryArray)
 {
+  //create an array for categories
+  //we need the array to account for additional terms
+  var rawCategories = Categories.find({});
+  var arrayCategories = Session.get("categories");
+  if(arrayCategories === null)
+  {
+    arrayCategories = new Array();
+  }
+  //will need to go to lower case
+
+  //compare our arrays
+
+  //set the categories to session
+  if(arrayCategories.length === 0)
+  {
+    arrayCategories = null;
+  }
+  Session.set("categories", arrayCategories);
+
+  //return the modified query
   return queryArray;
-}
-/**
- * Search the index
- */
-function indexSearch(input)
-{
-  return input;
 }
 
 /**
- * Rank the results of the index search
+ * Ranked search
  */
-function searchRank(indexResults)
+function searchRank(results)
 {
-  return indexResults;
+  return results;
 }

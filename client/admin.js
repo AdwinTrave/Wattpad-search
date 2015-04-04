@@ -101,6 +101,41 @@ function getCategories()
     console.log(dataArray);
     for(var i = 0; i < dataArray.length; i++){
       //insert into the DB
+
+      //if the category matches with our predefined terms, add terms
+      var terms;
+      switch(dataArray[i].name)
+      {
+        case "Science Fiction":
+          terms = ["Scifi", "Sci-fi", "Science"];
+          break;
+        case "Mystery / Thriller":
+          terms = ["Mystery", "Thriller"];
+          break;
+        case "Historical Fiction":
+          terms = ["History", "Historical"];
+          break;
+        case "Teen Fiction":
+          terms = ["Teen"];
+          break;
+        case "Fanfiction":
+          terms = ["Fanfic", "Harry Potter", "Naruto", "Lord of the Rings", "Eragon", "Gundam", "Bleach", "Walking Dead"];
+          break;
+        case "Poetry":
+          terms = ["Poem"];
+          break;
+        case "General Fiction":
+          terms = ["Fiction"];
+          break;
+        case "Spiritual":
+          terms = ["Supernatural"];
+          break;
+        case "Non-Fiction":
+          terms = ["Real Story", "True Story"];
+          break;
+        default: terms = []; break; //empty array
+      }
+
       Categories.insert({id: dataArray[i].id, name: dataArray[i].name, terms: []})
       Session.set('stored', Session.get('stored')+1);
       console.log(dataArray[i].name + " Has been added.");
