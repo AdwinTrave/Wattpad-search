@@ -16,7 +16,7 @@ Windows: https://install.meteor.com/windows
 Mac OS X or Linux run the following in terminal:
 ```
 curl https://install.meteor.com/ | sh
-`
+```
 
 Now clone the repository, navigate to the directory and run `meteor`. This will start the Meteor server on `http://localhost:3000/`.
 
