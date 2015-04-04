@@ -1,14 +1,36 @@
-Template.hello.events({
+//HELPERS
+Template.admin.helpers({
+  categoriesInDB: function(){
+    return Categories.count() > 1;
+  }
+});
+
+//EVENTS
+Template.admin.events({
+  'submit #getCategories': function(event, template){
+    //prevent default behavior of refreshing the page
+    event.preventDefault();
+
+    //get categories
+    getCategories();
+  },
   'submit #getStories': function (event, template) {
     //prevent default behavior of refreshing the page
     event.preventDefault();
 
-    var category = $("#categoryId").val();
+    //get the list of categories
+    var categories = Categories.find({});
 
-    /* Getting stories by category */
-    console.log("Getting category id: " + category);
+    //for each loop
+    for(var i = 0; i < categories.length; i++)
+    {
+      getStories(categories[i].id);
 
-    getStories(category);
+      if(i === categories.length)
+      {
+        alert("Last category processed. You should now have enough data to run the search.");
+      }
+    }
   }
 });
 
@@ -25,11 +47,11 @@ if (Meteor.isServer) {
 
 function getStories(category)
 {
-  //gettin 1000 at one time, this might freeze a browser for a little while
-  console.log("https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=1000");
+  //gettin 100 at one time, this might freeze a browser for a little while
+  console.log("https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100");
   var stories = $.ajax({
     type: "GET",
-    url: "https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=1000",
+    url: "https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100",
     dataType: "json",
     //add the authorization header
     beforeSend: setAuthorization
@@ -75,8 +97,6 @@ function getCategories()
   });
   //process the data
   categories.done(function(data){
-    alert("done");
-    console.log(data.categories);
     var dataArray = data.categories;
     console.log(dataArray);
     for(var i = 0; i < dataArray.length; i++){
@@ -85,5 +105,7 @@ function getCategories()
       Session.set('stored', Session.get('stored')+1);
       console.log(dataArray[i].name + " Has been added.");
     }
+    alert("Retrieved all the categories!");
+    console.log(data.categories);
   });
 }
