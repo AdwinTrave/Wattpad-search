@@ -48,6 +48,7 @@
 
 body{
     font-family: Raleway;
+    background-color: #eeeeee;
 }
 
 legend{
@@ -66,10 +67,32 @@ legend{
     margin-left: 0;
 }
 
+#searchForm{
+    background-color: white;
+}
+
+
 #searchFormCont{
     overflow: hidden; 
     padding-right: .5em;
 }
 #searchTerm{
     width: 100%;
+}
+
+.bookCover{
+    float: right;
+    width: 25%;
+    height: auto;
+    margin: 2px;
+    
+}
+
+.searchResult{
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    display: block;
+    margin: 10px auto;
+    box-shadow: 1px 1px 2px #888888;
 }
