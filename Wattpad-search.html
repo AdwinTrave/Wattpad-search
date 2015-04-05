@@ -7,6 +7,7 @@
 <body>
     <div class="wrapper">
     {{> search}}
+    {{>story}}
     </div>
 </body>
 
@@ -37,6 +38,21 @@
 
 <template name = "story">
 
-//How the story item should look like on the results page
+<!--//How the story item should look like on the results page-->
+    
+     <div id = "searchResult" class="content medium-12 large-9 columns">
+        <article class="post">
+          <img alt="person" class="author" src="http://a.wattpad.com/cover/35010673-256-k419385.jpg">
+          <h2>STARS</h2>
+            <p class="subheader">By <a href="#">corrinfenner</a></p>
+              <p>Keywords <a href="#"><span class="label">breakfast</span></a>
+                       <a href="#"><span class="label">makeup</span></a>
+                       <a href="#"><span class="label">mornings</span></a>
+                       <a href="#"><span class="label">school</span></a> 
+                       <a href="#"><span class="label">teens</span></a></p>  
+          <p>Riley is a ordinary girl. Till one day her life turns upside down. Her mom left he when she was 3 years old. Her dad stayed by her side. She enjoyed watching the stars at night with her dad. One day her father was gone for a business trip and never returned!</p>
+          <a href="#" class="ghost button">Read it on wattpad.com &rarrlp;</a>
+        </article>
+    </div>
 
 </template>
