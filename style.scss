@@ -60,26 +60,6 @@ legend{
     margin: 0 auto;
 }
 
-#submitButton{
-    float: right;
-    height:  2.3125rem;
-    padding: 2px inherit;
-    margin-left: 0;
-}
-
-#searchForm{
-    background-color: white;
-}
-
-
-#searchFormCont{
-    overflow: hidden; 
-    padding-right: .5em;
-}
-#searchTerm{
-    width: 100%;
-}
-
 .bookCover{
     float: right;
     width: 25%;
@@ -88,7 +68,7 @@ legend{
     
 }
 
-.searchResult{
+.box{
     background-color: white;
     border: 1px solid black;
     padding: 10px;
