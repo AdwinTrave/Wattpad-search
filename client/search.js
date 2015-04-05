@@ -1,3 +1,10 @@
+Template.search.helpers({
+  categoriesSelected: function(){
+    //get the list of categories that were selected for the search
+
+  }
+});
+
 Template.search.events({
   'submit #searchForm': function(event, template){
     //prevent default behavior of refreshing the page
@@ -10,21 +17,24 @@ Template.search.events({
     var queryArray = tokenize(query);
 
     //step 1: identify category and remove those words
-    Session.set("categories", null);
+    Session.set("categories", null); //remove categories for previous search
     queryArray = categoriesIdentifier(queryArray);
 
     //step 2: remove stop words (and Porter-Stemmer)
-    queryArray = stopWordsRemoval(query);
+    queryArray = stopWordsRemoval(queryArray);
     console.log("query after stop words and stemmer: " + queryArray);
 
     //step 2.5: look again for categories
     queryArray = categoriesIdentifier(queryArray);
 
     //step 3: ranked search
+    var results = searchRank(queryArray);
 
     //step 4: display results - get the documents
   }
 });
+
+//-----------------------------------------------------------------------------
 
 function tokenize(query)
 {
@@ -36,11 +46,13 @@ function tokenize(query)
   query = query.toLowerCase();
 
   //split
-  return query.split(/[.,\s\-\/*+!#$%&*\\()\[\]\"\']+(?!\w+])/);
+  return query.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
 }
 
+//-----------------------------------------------------------------------------
+
 //compares the inserted string with our
-function stopWordsRemoval(query)
+function stopWordsRemoval(queryArray)
 {
   //compare the query array with the stopwords array
   //first get stopwords
@@ -51,10 +63,10 @@ function stopWordsRemoval(query)
   //console.log(stopwords);
 
   //get rid of stopwords
-  var queryArrayFinal = new Array();
+  var queryArrayFinal = [];
   $.each(queryArray, function(key, value){
     //console.log(value);
-    var index = $.inArray(value.toLowerCase(), stopwords);
+    var index = stopwords.indexOf(value.toLowerCase());
     //console.log(index);
     if( !(index >= 0) )
     {
@@ -63,13 +75,15 @@ function stopWordsRemoval(query)
   });
 
   //stemmer
-  $.each(queryArrayNext, function(key, value){
+  $.each(queryArrayFinal, function(key, value){
     queryArrayFinal[key] = stemmer(value);
   });
 
   //return the query as an array
   return queryArrayFinal;
 }
+
+//-----------------------------------------------------------------------------
 
 /**
  * Identifies categories
@@ -80,15 +94,157 @@ function categoriesIdentifier(queryArray)
 {
   //create an array for categories
   //we need the array to account for additional terms
-  var rawCategories = Categories.find({});
+  //console.log(queryArray);
+  var categories = Categories.find({}).fetch();
+  var queryOutput = [];
+
+  for(var i = 0; i < queryArray.length; i++)
+  {
+    //go with that term through the categories
+    categories.some(function(cat)
+    {
+      //console.log(cat);
+
+      //check if the category is a phrase (2+words)
+      var phrase = cat.name.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
+
+      var index = queryOutput.indexOf(queryArray[i]);
+      var found = false;
+      if(index >= 0)
+      {
+        found = true;
+      }
+
+      if(phrase[0].toLowerCase() == queryArray[i])
+      {
+        var match = true;
+        if(phrase.length > 1)
+        {
+          //we have a phrase, check the next words to confirm that this is indeed the category
+          for(var k = 0; k < phrase.length; k++)
+          {
+            if( !(phrase[k].toLowerCase() == queryArray[i+k]) )
+            {
+              match = false;
+            }
+          }
+        }
+
+        //remove the word from query by not including it in the new query
+        if(!match)
+        {
+          //check that the term already isn't part of the output
+          if(!found)
+          {
+            //console.log("adding " + queryArray[i]);
+            queryOutput.push(queryArray[i]);
+          }
+        }
+        else
+        {
+          //console.log("match-phrase " + cat.name);
+          //add category to search
+          addSearchCategory(cat.id);
+          //now remove from the output array and end the loop for this word
+          if( found )
+          {
+            //console.log("removing " + index + " " + queryArray[i]);
+            queryOutput.splice(index, 1);
+          }
+          //console.log(queryOutput);
+          return true;
+        }
+      }
+      else if(cat.terms.length > 0)
+      {
+        cat.terms.some(function(term)
+        {
+          var token = term.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
+          if(queryArray[i] == token[0].toLowerCase())
+          {
+            //console.log("matched: " + token[0].toLowerCase() + " : " + queryArray[i]);
+            var match = true;
+            if(token.length > 1)
+            {
+              //console.log("Found phrase " + token.length);
+              //we have a phrase, check the next words to confirm that this is indeed the category
+              //we start at 1, because we have already found 0
+              for(var k = 1; k < token.length; k++)
+              {
+                //console.log(token[k].toLowerCase() + " : " + queryArray[i + k]);
+                if (token[k].toLowerCase() != queryArray[i + k]) {
+                  match = false;
+                }
+              }
+            }
+
+            if(!match)
+            {
+              if(!found){
+                //console.log("adding2 " + queryArray[i]);
+                queryOutput.push(queryArray[i]);
+              }
+            }
+            else
+            {
+              //console.log("match2 " + cat.name);
+              //add category to search
+              addSearchCategory(cat.id);
+              //remove all the words from the queryArray to prevent processing
+              if( found )
+              {
+                //console.log("removing2 " + queryArray[i]);
+                queryOutput.splice(index, 1);
+              }
+
+              //remove the words after the start one from the queryArray to prevent future processing
+              queryArray.splice(index+1,token.length-1);
+
+              return true;
+            }
+          }
+        });
+      }
+      else
+      {
+        //no match
+        if(!found) {
+          //console.log("adding3 " + queryArray[i]);
+          queryOutput.push(queryArray[i]);
+        }
+      }
+    });
+  }
+
+  //console.log(queryOutput);
+  //return the modified query
+  return queryOutput;
+}
+
+//-----------------------------------------------------------------------------
+
+/**
+ * Add category to the se
+ * @var int categoryID
+ */
+function addSearchCategory(categoryID)
+{
+  //get the session
   var arrayCategories = Session.get("categories");
   if(arrayCategories === null)
   {
-    arrayCategories = new Array();
+    arrayCategories = [];
   }
-  //will need to go to lower case
 
-  //compare our arrays
+  //check if the given id isn't already included
+  if(arrayCategories.indexOf(categoryID) === -1)
+  {
+    //add the id if not included
+    arrayCategories.push(categoryID);
+  }
+
+  //DEBUG
+  console.log("Categories selected: " + arrayCategories);
 
   //set the categories to session
   if(arrayCategories.length === 0)
@@ -96,15 +252,15 @@ function categoriesIdentifier(queryArray)
     arrayCategories = null;
   }
   Session.set("categories", arrayCategories);
-
-  //return the modified query
-  return queryArray;
 }
+
+//-----------------------------------------------------------------------------
 
 /**
  * Ranked search
  */
 function searchRank(results)
 {
+  //get the list of
   return results;
 }
