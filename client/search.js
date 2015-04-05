@@ -17,6 +17,7 @@ Template.search.events({
     var queryArray = tokenize(query);
 
     //step 1: identify category and remove those words
+    Meteor.subscribe("allCategories");
     Session.set("categories", null); //remove categories for previous search
     queryArray = categoriesIdentifier(queryArray);
 
