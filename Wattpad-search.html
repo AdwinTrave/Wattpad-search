@@ -95,7 +95,7 @@
     </div>
     <div id="adminModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">Admin</h2>
-        <p class="lead"><a class="button">Get categories</a> </p>
+        <p><a class="button {{#if categoriesNotInDB}}disabled{{/if}}">Get categories</a></p>
         <p><a class="button">Get stories</a></p>
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     </div>

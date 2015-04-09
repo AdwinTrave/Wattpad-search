@@ -1,7 +1,10 @@
 //HELPERS
+
 Template.admin.helpers({
-  categoriesInDB: function(){
-    return Categories.count() > 1;
+  categoriesNotInDB: function(){
+    Meteor.subscribe("allCategories");
+    //console.log(Categories.find({}).count());
+    return Categories.find({}).count() > 1;
   }
 });
 
