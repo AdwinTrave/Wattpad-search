@@ -260,8 +260,18 @@ function addSearchCategory(categoryID)
 /**
  * Ranked search
  */
-function searchRank(results)
+function searchRank(tokens)
 {
-  //get the list of
-  return results;
+  //get the appropriate stories from database
+  //retrieve id, title, tags, summary
+  //don't forget to get categories from session
+  var categories = Session.get("categories");
+  Meteor.subscribe("findByCategoriesAndTokens", categories, tokens);
+
+  //
+
+  //
+
+  //return list of ids
+  return null;
 }
