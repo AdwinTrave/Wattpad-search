@@ -10,20 +10,21 @@ Template.admin.helpers({
 
 //EVENTS
 Template.admin.events({
-  'submit #getCategories': function(event, template){
+  'click .getCat': function(event, template){
     //prevent default behavior of refreshing the page
     event.preventDefault();
 
     //get categories
     getCategories();
   },
-  'submit #getStories': function (event, template) {
+  'click .getStories': function (event, template) {
     //prevent default behavior of refreshing the page
     event.preventDefault();
 
     //get the list of categories
-    var categories = Categories.find({});
-
+    var categories = Categories.find({}).fetch();
+console.log(categories.length);
+console.log(Categories.find({}).fetch());
     //for each loop
     for(var i = 0; i < categories.length; i++)
     {
@@ -140,7 +141,7 @@ function getCategories()
         default: terms = []; break; //empty array
       }
 
-      Categories.insert({id: dataArray[i].id, name: dataArray[i].name, terms: []})
+      Categories.insert({id: dataArray[i].id, name: dataArray[i].name, terms: []});
       Session.set('stored', Session.get('stored')+1);
       console.log(dataArray[i].name + " Has been added.");
     }
