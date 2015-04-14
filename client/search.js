@@ -32,6 +32,7 @@ Template.search.events({
     var results = searchRank(queryArray);
 
     //step 4: display results - get the documents
+    $("#results").text(results.toString());
   }
 });
 
@@ -266,13 +267,21 @@ function searchRank(tokens)
   //retrieve id, title, tags, summary
   //don't forget to get categories from session
   var categories = Session.get("categories");
-  Meteor.subscribe("findByCategoriesAndTokens", categories, tokens);
-  var stories = Stories.find({});
+  var results = new Array();
+  Meteor.subscribe("findByCategoriesAndTokens", categories, tokens, {
+    onReady: function(){
+      var stories = Stories.find().fetch();
+      //console.log(stories);
+      //unsubscribe from the collection
+      this.stop();
 
-  //now rank the search results
+      //now rank the search results
 
-  //
+
+    },
+    onError: function(){console.log("There was an error retrieving data from the databse.")}
+  });
 
   //return the lists of ids
-  return null;
+  return results;
 }
