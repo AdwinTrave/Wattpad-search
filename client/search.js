@@ -1,3 +1,5 @@
+//Test - Umair
+
 Template.search.helpers({
   categoriesSelected: function(){
     //get the list of categories that were selected for the search
@@ -271,7 +273,7 @@ function searchRank(tokens)
   Meteor.subscribe("findByCategoriesAndTokens", categories, tokens, {
     onReady: function(){
       var stories = Stories.find().fetch();
-      //console.log(stories);
+      console.log(stories);
       //unsubscribe from the collection
       this.stop();
 
