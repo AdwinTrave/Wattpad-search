@@ -51,7 +51,7 @@ if (Meteor.isServer) {
 function getStories(category)
 {
   //gettin 100 at one time, this might freeze a browser for a little while
-  console.log("https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100");
+  //console.log("https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100");
   var stories = $.ajax({
     type: "GET",
     url: "https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100",
@@ -80,8 +80,9 @@ function getStories(category)
         console.log("Story " + dataArray[i].id + " already exists in DB, skipping");
       }
     }
-    //Count how many stories are stored in the DB for this category
-    //console.log(Stories.find({categories: category}).count());
+    //Add index
+    // http://docs.mongodb.org/manual/reference/method/db.collection.ensureIndex/
+    Stories._ensureIndex({title: "text", description: "text", tags: "text"});
   });
 }
 

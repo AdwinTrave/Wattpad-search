@@ -1,7 +1,7 @@
 Template.search.helpers({
   categoriesSelected: function(){
     //get the list of categories that were selected for the search
-
+    return Session.get("categories");
   }
 });
 
@@ -267,11 +267,12 @@ function searchRank(tokens)
   //don't forget to get categories from session
   var categories = Session.get("categories");
   Meteor.subscribe("findByCategoriesAndTokens", categories, tokens);
+  var stories = Stories.find({});
+
+  //now rank the search results
 
   //
 
-  //
-
-  //return list of ids
+  //return the lists of ids
   return null;
 }
