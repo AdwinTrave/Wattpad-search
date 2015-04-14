@@ -273,11 +273,15 @@ function searchRank(tokens)
   Meteor.subscribe("findByCategoriesAndTokens", categories, tokens, {
     onReady: function(){
       var stories = Stories.find().fetch();
-      console.log(stories);
+      //console.log(stories);
       //unsubscribe from the collection
       this.stop();
 
       //now rank the search results
+      for (var i=0;i<stories.length;i++){
+        var doc = stories[i].description;
+
+      }
 
 
     },
