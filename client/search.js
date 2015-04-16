@@ -29,10 +29,11 @@ Template.search.events({
          //step 2.5: look again for categories
          Meteor.apply("identifyCategories", [results], {wait: true, onResultReceived: function(error, results){
            queryArray = categoriesResultsSplit(results);
+           console.log(queryArray);
            //console.log("2.5 " + results);
            //step 3: ranked search
            var categories = Session.get("categories");
-           Meteor.apply("rankedSearch", [categories, results], {wait: true, onResultReceived: function(error, results){
+           Meteor.apply("rankedSearch", [queryArray, categories], {wait: true, onResultReceived: function(error, results){
              //console.log("3: " + results);
              //step 4: display results - get the documents
              $("#results").text(results.toString());
@@ -51,6 +52,14 @@ function categoriesResultsSplit(results)
   var categories = results[1];
 
   //get categories into a session
+  var prevCategories = Session.get("categories");
+  if(prevCategories !== null)
+  {
+    for(var i = 0; i < prevCategories.length; i++)
+    {
+      categories.push(prevCategories[i]);
+    }
+  }
   Session.set("categories", categories);
   //return the tokens
   return results[0];
