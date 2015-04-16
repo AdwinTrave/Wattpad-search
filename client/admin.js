@@ -70,16 +70,20 @@ function getStories(category)
 			{
 				//there is no entry add the story to DB
 				console.log("Adding story " + dataArray[i].id);
-				Stories.insert(dataArray[i]);
+				dataArray[i].language = dataArray[i].language.name.toLowerCase();
+				if(dataArray[i].language === "english")
+				{
+					Stories.insert(dataArray[i]);
+				}
+				else {
+					console.log("Not an English story, skipping.");
+				}
 			}
 			else
 			{
 				console.log("Story " + dataArray[i].id + " already exists in DB, skipping");
 			}
 		}
-		//Add index
-		// http://docs.mongodb.org/manual/reference/method/db.collection.ensureIndex/
-		Stories._ensureIndex({title: "text", description: "text", tags: "text"});
 	});
 }
 function getCategories()
@@ -135,7 +139,7 @@ function getCategories()
 				default: terms = []; break; //empty array
 			}
 			Categories.insert({id: dataArray[i].id, name: dataArray[i].name, terms: []})
-			Session.set('stored', Session.get('stored')+1);
+			//Session.set('stored', Session.get('stored')+1);
 			console.log(dataArray[i].name + " Has been added.");
 		}
 		alert("Retrieved all the categories!");
