@@ -178,20 +178,32 @@ Meteor.methods({
         var scores = new Array();
 
         //rank the entries here
-        for(var k = 0; k < tokens.length; k++)
+        for(var i = 0; i < retrieved.length; i++)
         {
-            //first start with tags - 100 points
-            for(var i = 0; i < retrieved.length; i++)
+            //first add the story to score with score 0
+            var storyID = retrieved[i].id;
+            console.log("Story ID: " + storyID);
+            scores.push([storyID, 0]);
+            console.log("SCORES " + scores.toString());
+
+            //tokenize and stemm all the entries
+            //tags
+            var tags = retrieved[i].tags;
+            tags = stopWordsAndStemm(tags);
+
+            //title
+            var title = retrieved[i].title;
+            title = tokenization(title);
+            title = stopWordsAndStemm(title);
+
+            //description
+            var description = retrieved[i].description;
+            description = tokenization(description);
+            description = stopWordsAndStemm(description);
+
+            for(var k = 0; k < tokens.length; k++)
             {
-                //first add the story to score with score 0
-                var storyID = retrieved[i].id;
-                scores[storyID] = 0;
-                console.log(scores.toString());
-
-                //tokenize and stemm
-                var tags = retrieved[i].tags;
-                tags = stopWordsAndStemm(tags);
-
+                //first start with tags - 100 points
                 var eval = tags.indexOf(tokens[k]);
                 if(eval === -1)
                 {
@@ -202,23 +214,23 @@ Meteor.methods({
                 {
                     console.log("Token found in the title");
                     //add to score
-                    scores[storyID] += 100;
+                    scores[i][1] = scores[i][1] + 100;
                 }
+
+                //second rank by title - 50 points
+
+                //lastly rank by description - 10 points
             }
-
-            //second rank by title - 50 points
-
-            //lastly rank by description - 10 points
         }
 
         //sort ranks top to bottom and return
         console.log("SCORES before sort: " + scores.toString());
-        scores.sort();
-        console.log("SCORES after sort: " + scores.toString());
+        //scores.sort();
+        //console.log("SCORES after sort: " + scores.toString());
 
-        for(var storyID in scores)
+        for(var story in scores)
         {
-            results.push(scores[storyID]);
+            results.push(scores[story]);
         }
 
         return results;
