@@ -34,6 +34,7 @@ Meteor.methods({
                 //console.log(cat);
 
                 //@todo if the query hints to fanfiction then don't remove the word(s) from query unless it is "fanfiction" or "fan fiction" as the specific fan fiction terms will be needed later
+                //@todo stemm and evaluate how stemmed terms effect the search
 
                 //check if the category is a phrase (2+words)
                 var phrase = cat.name.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
@@ -185,9 +186,9 @@ Meteor.methods({
         {
             //first add the story to score with score 0
             var storyID = retrieved[i].id;
-            console.log("Story ID: " + storyID);
+            //console.log("Story ID: " + storyID);
             scores.push(new Array(storyID, 0));
-            console.log("SCORES " + scores.toString());
+            //console.log("SCORES " + scores.toString());
 
             //tokenize and stemm all the entries
             //tags
@@ -209,18 +210,18 @@ Meteor.methods({
 
             for(var k = 0; k < tokens.length; k++)
             {
-                console.log(tokens[k]);
+                //console.log(tokens[k]);
                 //first start with tags - 100 points
                 var evalTags = tags.indexOf(tokens[k]);
-                console.log(evalTags);
+                //console.log(evalTags);
                 if(evalTags === -1)
                 {
                     //token not found
-                    console.log("Token not found in the tags.");
+                    //console.log("Token not found in the tags.");
                 }
                 else
                 {
-                    console.log("Token found in the tags.");
+                    //console.log("Token found in the tags.");
                     //add to score
                     scores[i][1] = scores[i][1] + 100;
                 }
@@ -228,15 +229,15 @@ Meteor.methods({
                 //second rank by title - 50 points
                 //@todo look for more instances and evaluate how relevant they are
                 var evalTitle = title.indexOf(tokens[k]);
-                console.log(evalTitle);
+                //console.log(evalTitle);
                 if(evalTitle === -1)
                 {
                     //token not found
-                    console.log("Token not found in the title.");
+                    //console.log("Token not found in the title.");
                 }
                 else
                 {
-                    console.log("Token found in the title.");
+                    //console.log("Token found in the title.");
                     //add to score
                     scores[i][1] = scores[i][1] + 50;
                 }
@@ -244,15 +245,15 @@ Meteor.methods({
                 //lastly rank by description - 10 points
                 //@todo look for more instances and evaluate how relevant they are
                 var evalDesc = description.indexOf(tokens[k]);
-                console.log(evalDesc);
+                //console.log(evalDesc);
                 if(evalDesc === -1)
                 {
                     //token not found
-                    console.log("Token not found in the description.");
+                    //console.log("Token not found in the description.");
                 }
                 else
                 {
-                    console.log("Token found in the description.");
+                    //console.log("Token found in the description.");
                     //add to score
                     scores[i][1] = scores[i][1] + 10;
                 }
@@ -260,8 +261,8 @@ Meteor.methods({
         }
 
         //sort ranks top to bottom and return
-        console.log(retrieved);
-        console.log("SCORES before sort: " + scores.toString());
+        //console.log(retrieved);
+        //console.log("SCORES before sort: " + scores.toString());
         console.log(scores);
         //Sort the results by Score
         var scoresOnly = new Array();
