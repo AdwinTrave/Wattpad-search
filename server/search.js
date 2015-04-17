@@ -264,6 +264,7 @@ Meteor.methods({
 
 
             }
+            
             //Compute the natural log of each score for a better Ranking
             if(scores[i][1] != 0)
             {
