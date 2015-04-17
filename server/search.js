@@ -33,6 +33,8 @@ Meteor.methods({
             {
                 //console.log(cat);
 
+                //@todo if the query hints to fanfiction then don't remove the word(s) from query unless it is "fanfiction" or "fan fiction" as the specific fan fiction terms will be needed later
+
                 //check if the category is a phrase (2+words)
                 var phrase = cat.name.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
 
@@ -172,12 +174,13 @@ Meteor.methods({
         else
         {
             retrieved = Stories.find({categories: {$in: categories}, $text: {$search: tokensStr}},
-              {fields: {id: 1, title: 1, description: 1, tags: 1}}).fetch();
+                {fields: {id: 1, title: 1, description: 1, tags: 1}}).fetch();
         }
 
         var scores = new Array();
 
         //rank the entries here
+        //@todo investigate more the proper weights that we give to each category
         for(var i = 0; i < retrieved.length; i++)
         {
             //first add the story to score with score 0
@@ -223,6 +226,7 @@ Meteor.methods({
                 }
 
                 //second rank by title - 50 points
+                //@todo look for more instances and evaluate how relevant they are
                 var evalTitle = title.indexOf(tokens[k]);
                 console.log(evalTitle);
                 if(evalTitle === -1)
@@ -238,7 +242,7 @@ Meteor.methods({
                 }
 
                 //lastly rank by description - 10 points
-                //@todo improve so that multiple mentions add more points
+                //@todo look for more instances and evaluate how relevant they are
                 var evalDesc = description.indexOf(tokens[k]);
                 console.log(evalDesc);
                 if(evalDesc === -1)
@@ -259,37 +263,24 @@ Meteor.methods({
         console.log(retrieved);
         console.log("SCORES before sort: " + scores.toString());
         console.log(scores);
-        //scores.sort();
-        //console.log("SCORES after sort: " + scores.toString());
-
-		
-		//Sort the results by Score
-		var scoresOnly = new Array();
-		for(var i = 0; i < scores.length ;i++)
+        //Sort the results by Score
+        var scoresOnly = new Array();
+        for(var i = 0; i < scores.length ;i++)
         {
-			scoresOnly.push(scores[i][1]);
+            scoresOnly.push(scores[i][1]);
         }
-		scoresOnly.sort(function(a, b){return b-a});
-		
-		for(var i = 0; i < scoresOnly.length ;i++)
+        scoresOnly.sort(function(a, b){return b-a});
+
+        for(var i = 0; i < scoresOnly.length ;i++)
         {
-			for(var j = 0; j < scoresOnly.length ;j++)
-			{
-				if(scores[j][1] == scoresOnly[i] && results.indexOf(scores[j]) == -1 )
-				{
-					results.push(scores[j]);
-				}
-			}
+            for(var j = 0; j < scoresOnly.length ;j++)
+            {
+                if(scores[j][1] == scoresOnly[i] && results.indexOf(scores[j]) == -1 )
+                {
+                    results.push(scores[j]);
+                }
+            }
         }
-
-
-
-
-       /* for(var story in scores)
-        {
-            results.push(scores[story]);
-        }*/
-
         return results;
     }
 });
