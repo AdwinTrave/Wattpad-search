@@ -262,7 +262,11 @@ Meteor.methods({
                     scores[i][1] = scores[i][1] + 10;
                 }
 
-                //scores[i][1] = Math.log(scores[i][1]);
+
+            }
+            if(scores[i][1] != 0)
+            {
+              scores[i][1] = Math.log(scores[i][1]).toFixed(2);
             }
         }
 
