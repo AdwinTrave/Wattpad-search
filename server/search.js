@@ -167,12 +167,12 @@ Meteor.methods({
 
         if(categories === null)
         {
-            retrieved = Stories.find({$text: {$search: tokensStr}}, {id: 1, title: 1, description: 1, tags: 1}).fetch();
+            retrieved = Stories.find({$text: {$search: tokensStr}}, {fields: {id: 1, title: 1, description: 1, tags: 1}}).fetch();
         }
         else
         {
             retrieved = Stories.find({categories: {$in: categories}, $text: {$search: tokensStr}},
-              {id: 1, title: 1, description: 1, tags: 1}).fetch();
+              {fields: {id: 1, title: 1, description: 1, tags: 1}}).fetch();
         }
 
         var scores = new Array();
@@ -183,7 +183,7 @@ Meteor.methods({
             //first add the story to score with score 0
             var storyID = retrieved[i].id;
             console.log("Story ID: " + storyID);
-            scores.push([storyID, 0]);
+            scores.push(new Array(storyID, 0));
             console.log("SCORES " + scores.toString());
 
             //tokenize and stemm all the entries
@@ -238,6 +238,7 @@ Meteor.methods({
                 }
 
                 //lastly rank by description - 10 points
+                //@todo improve so that multiple mentions add more points
                 var evalDesc = description.indexOf(tokens[k]);
                 console.log(evalDesc);
                 if(evalDesc === -1)
@@ -255,7 +256,9 @@ Meteor.methods({
         }
 
         //sort ranks top to bottom and return
+        console.log(retrieved);
         console.log("SCORES before sort: " + scores.toString());
+        console.log(scores);
         //scores.sort();
         //console.log("SCORES after sort: " + scores.toString());
 
