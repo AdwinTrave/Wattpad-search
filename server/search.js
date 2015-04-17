@@ -262,10 +262,33 @@ Meteor.methods({
         //scores.sort();
         //console.log("SCORES after sort: " + scores.toString());
 
-        for(var story in scores)
+		
+		//Sort the results by Score
+		var scoresOnly = new Array();
+		for(var i = 0; i < scores.length ;i++)
+        {
+			scoresOnly.push(scores[i][1]);
+        }
+		scoresOnly.sort(function(a, b){return b-a});
+		
+		for(var i = 0; i < scoresOnly.length ;i++)
+        {
+			for(var j = 0; j < scoresOnly.length ;j++)
+			{
+				if(scores[j][1] == scoresOnly[i] && results.indexOf(scores[j]) == -1 )
+				{
+					results.push(scores[j]);
+				}
+			}
+        }
+
+
+
+
+       /* for(var story in scores)
         {
             results.push(scores[story]);
-        }
+        }*/
 
         return results;
     }
