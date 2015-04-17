@@ -15,17 +15,7 @@ Meteor.startup(function () {
 Meteor.methods({
     //returns tokens
     tokenize: function(query){
-        //separate query into an array of words
-        //use space, columns and dots as dividers
-        query = query.trim();
-
-        //to lower case
-        query = query.toLowerCase();
-
-        //split
-        var returnArray = query.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
-        //console.log("Tokenize returning: " + EJSON.stringify(returnArray));
-        return returnArray;
+        return tokenization(query);
     },
     //returns array of categories and modified query
     identifyCategories: function(queryArray){
@@ -161,30 +151,7 @@ Meteor.methods({
     },
     //returns revised tokens
     stopWordsAndStemmer: function(queryArray){
-        var stopwords = ["a","a's","able","about","above","according","accordingly","across","actually","after","afterwards","again","against","ain't","all","allow","allows","almost","alone","along","already","also","although","always","am","among","amongst","an","and","another","any","anybody","anyhow","anyone","anything","anyway","anyways","anywhere","apart","appear","appreciate","appropriate","are","aren't","around","as","aside","ask","asking","associated","at","available","away","awfully","b","be","became","because","become","becomes","becoming","been","before","beforehand","behind","being","believe","below","beside","besides","best","better","between","beyond","both","brief","but","by","c","c'mon","c's","came","can","can't","cannot","cant","cause","causes","certain","certainly","changes","clearly","co","com","come","comes","concerning","consequently","consider","considering","contain","containing","contains","corresponding","could","couldn't","course","currently","d","definitely","described","despite","did","didn't","different","do","does","doesn't","doing","don't","done","down","downwards","during","e","each","edu","eg","eight","either","else","elsewhere","enough","entirely","especially","et","etc","even","ever","every","everybody","everyone","everything","everywhere","ex","exactly","example","except","f","far","few","fifth","first","five","followed","following","follows","for","former","formerly","forth","four","from","further","furthermore","g","get","gets","getting","given","gives","go","goes","going","gone","got","gotten","greetings","h","had","hadn't","happens","hardly","has","hasn't","have","haven't","having","he","he's","hello","help","hence","her","here","here's","hereafter","hereby","herein","hereupon","hers","herself","hi","him","himself","his","hither","hopefully","how","howbeit","however","i","i'd","i'll","i'm","i've","ie","if","ignored","immediate","in","inasmuch","inc","indeed","indicate","indicated","indicates","inner","insofar","instead","into","inward","is","isn't","it","it'd","it'll","it's","its","itself","j","just","k","keep","keeps","kept","know","known","knows","l","last","lately","later","latter","latterly","least","less","lest","let","let's","like","liked","likely","little","look","looking","looks","ltd","m","mainly","many","may","maybe","me","mean","meanwhile","merely","might","more","moreover","most","mostly","much","must","my","myself","n","name","namely","nd","near","nearly","necessary","need","needs","neither","never","nevertheless","new","next","nine","no","nobody","non","none","noone","nor","normally","not","nothing","novel","now","nowhere","o","obviously","of","off","often","oh","ok","okay","old","on","once","one","ones","only","onto","or","other","others","otherwise","ought","our","ours","ourselves","out","outside","over","overall","own","p","particular","particularly","per","perhaps","placed","please","plus","possible","presumably","probably","provides","q","que","quite","qv","r","rather","rd","re","really","reasonably","regarding","regardless","regards","relatively","respectively","right","s","said","same","saw","say","saying","says","second","secondly","see","seeing","seem","seemed","seeming","seems","seen","self","selves","sensible","sent","serious","seriously","seven","several","shall","she","should","shouldn't","since","six","so","some","somebody","somehow","someone","something","sometime","sometimes","somewhat","somewhere","soon","sorry","specified","specify","specifying","still","sub","such","sup","sure","t","t's","take","taken","tell","tends","th","than","thank","thanks","thanx","that","that's","thats","the","their","theirs","them","themselves","then","thence","there","there's","thereafter","thereby","therefore","therein","theres","thereupon","these","they","they'd","they'll","they're","they've","think","third","this","thorough","thoroughly","those","though","three","through","throughout","thru","thus","to","together","too","took","toward","towards","tried","tries","truly","try","trying","twice","two","u","un","under","unfortunately","unless","unlikely","until","unto","up","upon","us","use","used","useful","uses","using","usually","uucp","v","value","various","very","via","viz","vs","w","want","wants","was","wasn't","way","we","we'd","we'll","we're","we've","welcome","well","went","were","weren't","what","what's","whatever","when","whence","whenever","where","where's","whereafter","whereas","whereby","wherein","whereupon","wherever","whether","which","while","whither","who","who's","whoever","whole","whom","whose","why","will","willing","wish","with","within","without","won't","wonder","would","wouldn't","x","y","yes","yet","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves","z","zero"];
-
-        //get rid of stopwords
-        var queryArrayFinal = [];
-        //need to get rid of jquery in order for this to work
-        for(var key in queryArray)
-        {
-            //console.log(value);
-            var index = stopwords.indexOf(queryArray[key].toLowerCase());
-            //console.log(index);
-            if( !(index >= 0) )
-            {
-                queryArrayFinal.push(queryArray[key]);
-            }
-        }
-
-        //stemmer
-        for(var key in queryArrayFinal)
-        {
-            queryArrayFinal[key] = stemmer(queryArrayFinal[key]);
-        }
-
-        //return the query as an array
-        return queryArrayFinal;
+        return stopWordsAndStemm(queryArray);
     },
     //returns an array with ids
     rankedSearch: function(tokens, categories){
@@ -208,8 +175,51 @@ Meteor.methods({
               {id: 1, title: 1, description: 1, tags: 1}).fetch();
         }
 
+        var scores = new Array();
+
         //rank the entries here
-        results = retrieved;
+        for(var k = 0; k < tokens.length; k++)
+        {
+            //first start with tags - 100 points
+            for(var i = 0; i < retrieved.length; i++)
+            {
+                //first add the story to score with score 0
+                var storyID = retrieved[i].id;
+                scores[storyID] = 0;
+                console.log(scores.toString());
+
+                //tokenize and stemm
+                var tags = retrieved[i].tags;
+                tags = stopWordsAndStemm(tags);
+
+                var eval = tags.indexOf(tokens[k]);
+                if(eval === -1)
+                {
+                    //token not found
+                    console.log("Token not found in the title.");
+                }
+                else
+                {
+                    console.log("Token found in the title");
+                    //add to score
+                    scores[storyID] += 100;
+                }
+            }
+
+            //second rank by title - 50 points
+
+            //lastly rank by description - 10 points
+        }
+
+        //sort ranks top to bottom and return
+        console.log("SCORES before sort: " + scores.toString());
+        scores.sort();
+        console.log("SCORES after sort: " + scores.toString());
+
+        for(var storyID in scores)
+        {
+            results.push(scores[storyID]);
+        }
 
         return results;
     }
@@ -243,4 +253,47 @@ function addSearchCategory(categoryID, arrayCategories)
         arrayCategories = null;
     }
     return arrayCategories;
+}
+
+function tokenization(query)
+{
+    //separate query into an array of words
+    //use space, columns and dots as dividers
+    query = query.trim();
+
+    //to lower case
+    query = query.toLowerCase();
+
+    //split
+    var returnArray = query.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
+    //console.log("Tokenize returning: " + EJSON.stringify(returnArray));
+    return returnArray;
+}
+
+function stopWordsAndStemm(queryArray)
+{
+    var stopwords = ["a","a's","able","about","above","according","accordingly","across","actually","after","afterwards","again","against","ain't","all","allow","allows","almost","alone","along","already","also","although","always","am","among","amongst","an","and","another","any","anybody","anyhow","anyone","anything","anyway","anyways","anywhere","apart","appear","appreciate","appropriate","are","aren't","around","as","aside","ask","asking","associated","at","available","away","awfully","b","be","became","because","become","becomes","becoming","been","before","beforehand","behind","being","believe","below","beside","besides","best","better","between","beyond","both","brief","but","by","c","c'mon","c's","came","can","can't","cannot","cant","cause","causes","certain","certainly","changes","clearly","co","com","come","comes","concerning","consequently","consider","considering","contain","containing","contains","corresponding","could","couldn't","course","currently","d","definitely","described","despite","did","didn't","different","do","does","doesn't","doing","don't","done","down","downwards","during","e","each","edu","eg","eight","either","else","elsewhere","enough","entirely","especially","et","etc","even","ever","every","everybody","everyone","everything","everywhere","ex","exactly","example","except","f","far","few","fifth","first","five","followed","following","follows","for","former","formerly","forth","four","from","further","furthermore","g","get","gets","getting","given","gives","go","goes","going","gone","got","gotten","greetings","h","had","hadn't","happens","hardly","has","hasn't","have","haven't","having","he","he's","hello","help","hence","her","here","here's","hereafter","hereby","herein","hereupon","hers","herself","hi","him","himself","his","hither","hopefully","how","howbeit","however","i","i'd","i'll","i'm","i've","ie","if","ignored","immediate","in","inasmuch","inc","indeed","indicate","indicated","indicates","inner","insofar","instead","into","inward","is","isn't","it","it'd","it'll","it's","its","itself","j","just","k","keep","keeps","kept","know","known","knows","l","last","lately","later","latter","latterly","least","less","lest","let","let's","like","liked","likely","little","look","looking","looks","ltd","m","mainly","many","may","maybe","me","mean","meanwhile","merely","might","more","moreover","most","mostly","much","must","my","myself","n","name","namely","nd","near","nearly","necessary","need","needs","neither","never","nevertheless","new","next","nine","no","nobody","non","none","noone","nor","normally","not","nothing","novel","now","nowhere","o","obviously","of","off","often","oh","ok","okay","old","on","once","one","ones","only","onto","or","other","others","otherwise","ought","our","ours","ourselves","out","outside","over","overall","own","p","particular","particularly","per","perhaps","placed","please","plus","possible","presumably","probably","provides","q","que","quite","qv","r","rather","rd","re","really","reasonably","regarding","regardless","regards","relatively","respectively","right","s","said","same","saw","say","saying","says","second","secondly","see","seeing","seem","seemed","seeming","seems","seen","self","selves","sensible","sent","serious","seriously","seven","several","shall","she","should","shouldn't","since","six","so","some","somebody","somehow","someone","something","sometime","sometimes","somewhat","somewhere","soon","sorry","specified","specify","specifying","still","sub","such","sup","sure","t","t's","take","taken","tell","tends","th","than","thank","thanks","thanx","that","that's","thats","the","their","theirs","them","themselves","then","thence","there","there's","thereafter","thereby","therefore","therein","theres","thereupon","these","they","they'd","they'll","they're","they've","think","third","this","thorough","thoroughly","those","though","three","through","throughout","thru","thus","to","together","too","took","toward","towards","tried","tries","truly","try","trying","twice","two","u","un","under","unfortunately","unless","unlikely","until","unto","up","upon","us","use","used","useful","uses","using","usually","uucp","v","value","various","very","via","viz","vs","w","want","wants","was","wasn't","way","we","we'd","we'll","we're","we've","welcome","well","went","were","weren't","what","what's","whatever","when","whence","whenever","where","where's","whereafter","whereas","whereby","wherein","whereupon","wherever","whether","which","while","whither","who","who's","whoever","whole","whom","whose","why","will","willing","wish","with","within","without","won't","wonder","would","wouldn't","x","y","yes","yet","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves","z","zero"];
+
+    //get rid of stopwords
+    var queryArrayFinal = [];
+    //need to get rid of jquery in order for this to work
+    for(var key in queryArray)
+    {
+        //console.log(value);
+        var index = stopwords.indexOf(queryArray[key].toLowerCase());
+        //console.log(index);
+        if( !(index >= 0) )
+        {
+            queryArrayFinal.push(queryArray[key]);
+        }
+    }
+
+    //stemmer
+    for(var key in queryArrayFinal)
+    {
+        queryArrayFinal[key] = stemmer(queryArrayFinal[key]);
+    }
+
+    //return the query as an array
+    return queryArrayFinal;
 }
