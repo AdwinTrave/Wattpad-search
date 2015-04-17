@@ -197,7 +197,7 @@ Meteor.methods({
 
             //title
             var title = retrieved[i].title;
-            console.log(title);
+            //console.log(title);
             title = tokenization(title);
             title = stopWordsAndStemm(title);
 
@@ -206,12 +206,11 @@ Meteor.methods({
             description = tokenization(description);
             description = stopWordsAndStemm(description);
 
-            console.log(tokens);
-
+            //console.log(tokens);
             for(var k = 0; k < tokens.length; k++)
             {
                 //console.log(tokens[k]);
-                //first start with tags - 100 points
+                //first start with tags - 40 points
                 var evalTags = tags.indexOf(tokens[k]);
                 //console.log(evalTags);
                 if(evalTags === -1)
@@ -223,10 +222,11 @@ Meteor.methods({
                 {
                     //console.log("Token found in the tags.");
                     //add to score
-                    scores[i][1] = scores[i][1] + 100;
+                    scores[i][1] = scores[i][1] + 40;
+
                 }
 
-                //second rank by title - 50 points
+                //second rank by title - 25 points
                 //@todo look for more instances and evaluate how relevant they are
                 var evalTitle = title.indexOf(tokens[k]);
                 //console.log(evalTitle);
@@ -239,13 +239,17 @@ Meteor.methods({
                 {
                     //console.log("Token found in the title.");
                     //add to score
-                    scores[i][1] = scores[i][1] + 50;
+                    scores[i][1] = scores[i][1] + 25;
+
                 }
 
                 //lastly rank by description - 10 points
                 //@todo look for more instances and evaluate how relevant they are
+
+
                 var evalDesc = description.indexOf(tokens[k]);
                 //console.log(evalDesc);
+
                 if(evalDesc === -1)
                 {
                     //token not found
@@ -257,13 +261,15 @@ Meteor.methods({
                     //add to score
                     scores[i][1] = scores[i][1] + 10;
                 }
+
+                //scores[i][1] = Math.log(scores[i][1]);
             }
         }
 
         //sort ranks top to bottom and return
         //console.log(retrieved);
         //console.log("SCORES before sort: " + scores.toString());
-        console.log(scores);
+        //console.log(scores);
         //Sort the results by Score
         var scoresOnly = new Array();
         for(var i = 0; i < scores.length ;i++)
@@ -282,6 +288,7 @@ Meteor.methods({
                 }
             }
         }
+        console.log(results.length);
         return results;
     }
 });
