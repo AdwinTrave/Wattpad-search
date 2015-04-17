@@ -164,10 +164,10 @@ Meteor.methods({
         if(Array.isArray(tokens))
         {
             tokensStr = tokens.toString();
-            console.log("Tokens to strign: " + tokensStr);
+            console.log("Tokens to string: " + tokensStr);
         }
 
-        if(categories === null)
+        if(categories.length === 0)
         {
             retrieved = Stories.find({$text: {$search: tokensStr}}, {fields: {id: 1, title: 1, description: 1, tags: 1}}).fetch();
         }
