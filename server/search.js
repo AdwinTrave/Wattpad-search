@@ -161,17 +161,17 @@ Meteor.methods({
         // Mongo will tokenize on its own
         if(Array.isArray(tokens))
         {
-            tokens = tokens.toString();
-            //console.log("Tokens to strign: " + tokens);
+            tokensStr = tokens.toString();
+            console.log("Tokens to strign: " + tokensStr);
         }
 
         if(categories === null)
         {
-            retrieved = Stories.find({$text: {$search: tokens}}, {id: 1, title: 1, description: 1, tags: 1}).fetch();
+            retrieved = Stories.find({$text: {$search: tokensStr}}, {id: 1, title: 1, description: 1, tags: 1}).fetch();
         }
         else
         {
-            retrieved = Stories.find({categories: {$in: categories}, $text: {$search: tokens}},
+            retrieved = Stories.find({categories: {$in: categories}, $text: {$search: tokensStr}},
               {id: 1, title: 1, description: 1, tags: 1}).fetch();
         }
 
@@ -193,6 +193,7 @@ Meteor.methods({
 
             //title
             var title = retrieved[i].title;
+            console.log(title);
             title = tokenization(title);
             title = stopWordsAndStemm(title);
 
@@ -201,25 +202,55 @@ Meteor.methods({
             description = tokenization(description);
             description = stopWordsAndStemm(description);
 
+            console.log(tokens);
+
             for(var k = 0; k < tokens.length; k++)
             {
+                console.log(tokens[k]);
                 //first start with tags - 100 points
-                var eval = tags.indexOf(tokens[k]);
-                if(eval === -1)
+                var evalTags = tags.indexOf(tokens[k]);
+                console.log(evalTags);
+                if(evalTags === -1)
+                {
+                    //token not found
+                    console.log("Token not found in the tags.");
+                }
+                else
+                {
+                    console.log("Token found in the tags.");
+                    //add to score
+                    scores[i][1] = scores[i][1] + 100;
+                }
+
+                //second rank by title - 50 points
+                var evalTitle = title.indexOf(tokens[k]);
+                console.log(evalTitle);
+                if(evalTitle === -1)
                 {
                     //token not found
                     console.log("Token not found in the title.");
                 }
                 else
                 {
-                    console.log("Token found in the title");
+                    console.log("Token found in the title.");
                     //add to score
-                    scores[i][1] = scores[i][1] + 100;
+                    scores[i][1] = scores[i][1] + 50;
                 }
 
-                //second rank by title - 50 points
-
                 //lastly rank by description - 10 points
+                var evalDesc = description.indexOf(tokens[k]);
+                console.log(evalDesc);
+                if(evalDesc === -1)
+                {
+                    //token not found
+                    console.log("Token not found in the description.");
+                }
+                else
+                {
+                    console.log("Token found in the description.");
+                    //add to score
+                    scores[i][1] = scores[i][1] + 10;
+                }
             }
         }
 

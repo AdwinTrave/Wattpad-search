@@ -49,10 +49,10 @@ if (Meteor.isServer) {
 function getStories(category)
 {
 	//gettin 100 at one time, this might freeze a browser for a little while
-	//console.log("https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100");
+	console.log("Getting the data, this might take a while.");
 	var stories = $.ajax({
 		type: "GET",
-		url: "https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100",
+		url: "https://api.wattpad.com:443/v4/stories?filter=hot&category="+category+"&limit=100",
 		dataType: "json",
 		//add the authorization header
 		beforeSend: setAuthorization
@@ -65,25 +65,28 @@ function getStories(category)
 		var dataArray = data.stories;
 		for(var i = 0; i < dataArray.length; i++)
 		{
+			var storyObject = dataArray[i];
 			//first check by story id if it already exists in the DB
-			if(Stories.findOne({id: dataArray[i].id}) == null)
+			console.log("Adding story " + storyObject.id);
+			if(storyObject === undefined)
 			{
-				//there is no entry add the story to DB
-				console.log("Adding story " + dataArray[i].id);
-				dataArray[i].language = dataArray[i].language.name.toLowerCase();
-				if(dataArray[i].language === "english")
-				{
-					Stories.insert(dataArray[i]);
-				}
-				else {
-					console.log("Not an English story, skipping.");
-				}
+				console.log("Udenfined story not added.");
 			}
 			else
 			{
-				console.log("Story " + dataArray[i].id + " already exists in DB, skipping");
+				Meteor.call("addStory", storyObject, {onResultReceived: function(error, result){
+					if(result)
+					{
+						console.log("Story " + storyObject.id + " has been added.");
+					}
+					else
+					{
+						console.log("Story " + storyObject.id + " already exists in the database.");
+					}
+				}});
 			}
 		}
+		Meteor.call("addIndex");
 	});
 }
 function getCategories()
