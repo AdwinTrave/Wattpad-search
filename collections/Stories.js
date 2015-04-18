@@ -14,12 +14,7 @@ if(Meteor.isServer)
         },
         addStory: function(storyObject){
             //console.log(storyObject);
-            if(Stories.findOne({id: storyObject.id}) === null)
-            {
-                console.log("Story " + storyObject.id + " already exists in DB, skipping");
-                return false;
-            }
-            else
+            if(Stories.findOne({id: storyObject.id}) === undefined)
             {
                 //there is no entry add the story to DB
                 if(storyObject.language === undefined)
@@ -32,6 +27,7 @@ if(Meteor.isServer)
                     if(storyObject.language === "english")
                     {
                         Stories.insert(storyObject);
+                        //Stories.update({id: storyObject.id}, {$set: storyObject});
                         console.log("Added " + storyObject.id);
                         return true;
                     }
@@ -39,6 +35,11 @@ if(Meteor.isServer)
                         console.log("Not an English story, skipping.");
                     }
                 }
+            }
+            else
+            {
+                console.log("Story " + storyObject.id + " already exists in DB, skipping");
+                return false;
             }
         }
     });
