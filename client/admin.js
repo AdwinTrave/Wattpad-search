@@ -52,7 +52,7 @@ function getStories(category)
 	console.log("Getting the data, this might take a while.");
 	var stories = $.ajax({
 		type: "GET",
-		url: "https://api.wattpad.com:443/v4/stories?filter=hot&category="+category+"&limit=100",
+		url: "https://api.wattpad.com:443/v4/stories?filter=new&category="+category+"&limit=100",
 		dataType: "json",
 		//add the authorization header
 		beforeSend: setAuthorization
