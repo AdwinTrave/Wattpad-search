@@ -32,3 +32,5 @@ If you get this issue stop meteor and run it again. Then it should go away.
 ## App
 ### Stopwords
 Original stopwords file from: https://github.com/6/stopwords/blob/master/dist/en.json
+### Stemmer
+Stemmer used from: http://tartarus.org/~martin/PorterStemmer/

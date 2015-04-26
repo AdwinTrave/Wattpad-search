@@ -1,10 +1,3 @@
-Template.search.helpers({
-  categoriesSelected: function(){
-    //get the list of categories that were selected for the search
-    return Session.get("categories");
-  }
-});
-
 Template.search.events({
   'submit #searchForm': function(event, template){
     //prevent default behavior of refreshing the page
@@ -13,6 +6,7 @@ Template.search.events({
     var query = $('#searchTerm').val();
     console.log("Query: " + query);
     Session.set("categories", null);
+    Session.set("page", 0);
 
     //step 0: tokenize
     Meteor.apply("tokenize", [query], {wait: true, onResultReceived: function(error, results){
@@ -38,6 +32,25 @@ Template.search.events({
              //step 4: display results - get the documents
              $("#results").text(results.toString());
              //subscribe to the documents and Meteor will take care of the rest
+
+             //display searched categories
+             var categories = Session.get("categories");
+             //console.log(Session.get("categories"));
+             if(categories.length > 0)
+             {
+               var categoriesNames = "";
+               for(var i = 0; i < categories.length; i++)
+               {
+                 var cat = Categories.findOne({"id": categories[i]});
+                 //console.log(cat);
+                 categoriesNames += '<span class="label">' + cat.name + "</span> ";
+               }
+               //we have categories show them
+               $("#selectedCategories").html("<p>Based on your query we are searching in these categories: " + categoriesNames + "</p>");
+             }
+
+             //show the results
+
            }});
          }});
         }});
