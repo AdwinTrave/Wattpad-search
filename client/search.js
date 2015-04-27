@@ -1,3 +1,22 @@
+Meteor.autorun(function(){
+  Session.setDefault("page", 1);
+  Session.setDefault("results", null);
+  Session.setDefault("totalPages", 0);
+});
+
+//results
+Template.results.helpers({
+  stories: function(){
+    getResults();
+    return Stories.find({});
+  }
+});
+
+//pagination listeners
+Template.results.events({
+
+});
+
 Template.search.events({
   'submit #searchForm': function(event, template){
     //prevent default behavior of refreshing the page
@@ -6,7 +25,6 @@ Template.search.events({
     var query = $('#searchTerm').val();
     console.log("Query: " + query);
     Session.set("categories", null);
-    Session.set("page", 0);
 
     //step 0: tokenize
     Meteor.apply("tokenize", [query], {wait: true, onResultReceived: function(error, results){
@@ -49,8 +67,11 @@ Template.search.events({
                $("#selectedCategories").html("<p>Based on your query we are searching in these categories: " + categoriesNames + "</p>");
              }
 
-             //show the results
-
+             //prep for pagination
+             Session.set("totalPages", Math.ceil(results.length/10));
+             Session.set("page", 1);
+             Session.set("results", results);
+             getResults();
            }});
          }});
         }});
@@ -76,4 +97,14 @@ function categoriesResultsSplit(results)
   Session.set("categories", categories);
   //return the tokens
   return results[0];
+}
+
+function getResults()
+{
+  console.log( Session.get("results") );
+  Meteor.subscribe("getStories", Session.get("results"), Session.get("page"), function(error){
+    if(error) {
+      console.log(error);
+    }
+  });
 }

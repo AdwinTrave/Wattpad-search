@@ -1,0 +1,20 @@
+<template name="results">
+    {{#if stories}}
+        {{#each stories}}
+          <div class="box content medium-12">
+            <article class="post">
+              <div id="img_box">
+                <img alt="bookCover" class="bookCover" src="http://a.wattpad.com/cover/35010673-256-k419385.jpg">
+              </div>
+              <h2>{{id}} - {{title}}</h2>
+              <p class="subheader">By <a href="#">{{user.name}}</a></p>
+              <p>Tags{{#each tags}}
+                <span class="label">{{this}}</span>
+                {{/each}}</p>
+              <p>{{description}}</p>
+              <a href="{{url}}" class="button tiny wattpadLink">Read it on Wattpad &rarrlp;</a>
+            </article>
+          </div>
+        {{/each}}
+    {{/if}}
+</template>
