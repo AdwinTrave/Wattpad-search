@@ -12,15 +12,17 @@ if(Meteor.isServer)
       for(var i = 0; i < storiesIdsArray.length; i++)
       {
         var item = storiesIdsArray[i];
-        listOfStories.push(parseInt(item[0]));
+        listOfStories.push(item[0].toString());
       }
       console.log(listOfStories);
 
-      return Stories.find({id: {$in: listOfStories}});
+      return Stories.find({id: {$in: listOfStories}},
+          {fields: {id: 1, title: 1, user: 1, description: 1, cover: 1, categories: 1, tags: 1, url: 1}});
     }
     else
     {
-      return Stories.find({},{limit: 10, sort: {id: -1}});
+      return Stories.find({},{limit: 10, sort: {id: -1},
+        fields: {id: 1, title: 1, user: 1, description: 1, cover: 1, categories: 1, tags: 1, url: 1}});
     }
 
   });
