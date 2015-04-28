@@ -48,7 +48,8 @@ Template.search.events({
            Meteor.apply("rankedSearch", [queryArray, categories], {wait: true, onResultReceived: function(error, results){
              //console.log("3: " + results);
              //step 4: display results - get the documents
-             $("#results").text(results.toString());
+             //$("#results").text(results.toString());
+             console.log(results);
              //subscribe to the documents and Meteor will take care of the rest
 
              //display searched categories
