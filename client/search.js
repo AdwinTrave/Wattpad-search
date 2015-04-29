@@ -1,7 +1,7 @@
 Meteor.autorun(function(){
   Session.setDefault("page", 1);
   Session.setDefault("results", null);
-  Session.setDefault("totalPages", 0);
+  Session.setDefault("totalPages", 1);
 });
 
 //results
