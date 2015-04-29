@@ -102,10 +102,7 @@ function categoriesResultsSplit(results)
 
 function getResults()
 {
-  console.log( Session.get("results") );
-  Meteor.subscribe("getStories", Session.get("results"), Session.get("page"), function(error){
-    if(error) {
-      console.log(error);
-    }
-  });
+  var results = Session.get("results");
+  console.log( results );
+  Meteor.subscribe("getStories", results, Session.get("page"));
 }
