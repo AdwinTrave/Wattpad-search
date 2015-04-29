@@ -8,7 +8,7 @@ Meteor.autorun(function(){
 Template.results.helpers({
   stories: function(){
     getResults();
-    return Stories.find({});
+    return Stories.find({}, {sort: {weight: -1}});
   }
 });
 
@@ -69,10 +69,23 @@ Template.search.events({
              }
 
              //prep for pagination
-             Session.set("totalPages", Math.ceil(results.length/10));
-             Session.set("page", 1);
-             Session.set("results", results);
-             getResults();
+             if(results.length > 0)
+             {
+               $("#results").html("");
+               Session.set("totalPages", Math.ceil(results.length/10));
+               Session.set("page", 1);
+               Session.set("results", results);
+
+               //unsubscribe from the current results
+
+               //get new results
+               getResults();
+             }
+             else
+             {
+               //unsubscribe from the current results
+              $("#results").html("Nothing found. Please try again.");
+             }
            }});
          }});
         }});

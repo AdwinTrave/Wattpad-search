@@ -11,10 +11,12 @@ if(Meteor.isServer)
 
     if(storiesIdsArray != null)
     {
-      for(var i = 1; i < storiesIdsArray.length; i++)
+      for(var i = 0; i < storiesIdsArray.length; i++)
       {
-        var item = storiesIdsArray[i-1];
+        var item = storiesIdsArray[i];
         listOfStories.push(item[0].toString());
+
+        Stories.update({id: item[0].toString()}, {$set: {weight: item[1]}});
       }
 
       /*
@@ -50,7 +52,7 @@ if(Meteor.isServer)
       return cursor;*/
 
       return Stories.find({id: {$in: listOfStories}},
-          {fields: {id: 1, title: 1, user: 1, description: 1, cover: 1, categories: 1, tags: 1, url: 1}});
+          {fields: {id: 1, title: 1, user: 1, description: 1, cover: 1, categories: 1, tags: 1, url: 1, weight: 1}});
     }
     else
     {
