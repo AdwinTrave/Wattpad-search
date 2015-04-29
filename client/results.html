@@ -9,6 +9,11 @@
               <h2>Story ID: {{id}} | Story Title: {{title}}</h2>
 
               <p class="subheader">By <a href="#">{{user.name}}</a></p>
+              <p>Categories {{#each categories}}
+                {{#if this != 0}}
+                  <span class="label">{{this}}</span>
+                {{/if}}
+              {{/each}}</p>
               <p>Tags{{#each tags}}
                 <span class="label">{{this}}</span>
                 {{/each}}</p>
