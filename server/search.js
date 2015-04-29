@@ -264,7 +264,7 @@ Meteor.methods({
 
 
             }
-            
+
             //Compute the natural log of each score for a better Ranking
             if(scores[i][1] != 0)
             {
@@ -339,7 +339,7 @@ function tokenization(query)
     query = query.toLowerCase();
 
     //split
-    var returnArray = query.split(/[.,\s\-\/*+!#$%&\\()\[\]\"\']+(?!\w+])/);
+    var returnArray = query.split(/[.,\s\-\/*+!?#$%&\\()\[\]\"\']+(?!\w+])/); // Added the ? to the list
     //console.log("Tokenize returning: " + EJSON.stringify(returnArray));
     return returnArray;
 }
