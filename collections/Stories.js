@@ -7,7 +7,7 @@ if(Meteor.isServer)
     var offset = (page-1)*10;
     var listOfStories = new Array();
     // http://stackoverflow.com/questions/22797768/does-mongodbs-in-clause-guarantee-order
-    var stack = [];
+    //var stack = [];
 
     if(storiesIdsArray != null)
     {
@@ -52,7 +52,8 @@ if(Meteor.isServer)
       return cursor;*/
 
       return Stories.find({id: {$in: listOfStories}},
-          {fields: {id: 1, title: 1, user: 1, description: 1, cover: 1, categories: 1, tags: 1, url: 1, weight: 1}});
+          {fields: {id: 1, title: 1, user: 1, description: 1, cover: 1, categories: 1, tags: 1, url: 1, weight: 1},
+            sort: {weight: -1}, limit: 10, skip: offset});
     }
     else
     {

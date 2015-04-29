@@ -17,5 +17,9 @@
             </article>
           </div>
         {{/each}}
+      <div class="row">
+        <button id="prevPage" class="button radius left {{#if prevDisabled}}disabled{{/if}}">Previous</button>
+        <button id="nextPage" class="button radius right {{#if nextDisabled}}disabled{{/if}}">Next</button>
+      </div>
     {{/if}}
 </template>

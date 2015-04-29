@@ -8,13 +8,61 @@ Meteor.autorun(function(){
 Template.results.helpers({
   stories: function(){
     getResults();
-    return Stories.find({});
+    return Stories.find({}, {sort: {weight: -1}});
+  },
+  prevDisabled: function(){
+    if(Session.get("page") == 1)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+
+  },
+  nextDisabled: function(){
+    if(Session.get("page") == Session.get("totalPages"))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 });
 
 //pagination listeners
 Template.results.events({
-
+  'click #nextPage': function(event){
+    event.preventDefault();
+    var currentPage = Session.get("page");
+    console.log(currentPage);
+    console.log(Session.get("totalPages"));
+    if(Session.get("totalPages") > currentPage)
+    {
+      Session.set("page", currentPage+1);
+      window.scrollTo(0, 0);
+    }
+    else
+    {
+      console.log("No more pages.");
+    }
+  },
+  'click #prevPage': function(event){
+    event.preventDefault();
+    var currentPage = Session.get("page");
+    if(currentPage > 1)
+    {
+      Session.set("page", currentPage-1);
+      window.scrollTo(0, 0);
+    }
+    else
+    {
+      console.log("You are on the first page.");
+    }
+  }
 });
 
 Template.search.events({
