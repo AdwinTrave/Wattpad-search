@@ -122,7 +122,8 @@ Meteor.methods({
                                 //add category to search
                                 searchCategories = addSearchCategory(cat.id, searchCategories);
                                 //remove all the words from the queryArray to prevent processing
-                                if( found )
+                                //unless its fanfiction term
+                                if( found && !(cat.id == 6))
                                 {
                                     //console.log("removing2 " + queryArray[i]);
                                     queryOutput.splice(index, 1);
