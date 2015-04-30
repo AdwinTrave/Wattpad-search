@@ -113,7 +113,11 @@ Template.search.events({
                  categoriesNames += '<span class="label">' + cat.name + "</span> ";
                }
                //we have categories show them
-               $("#selectedCategories").html("<p>Based on your query we are searching in these categories: " + categoriesNames + "</p>");
+               $('#selectedCategories').html("<p>Based on your query we are searching in these categories: " + categoriesNames + "</p>");
+             }
+             else
+             {
+               $('#selectedCategories').html("<p>No category recognized from your query.</p>");
              }
 
              //prep for pagination
