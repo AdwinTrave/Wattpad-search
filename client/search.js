@@ -30,8 +30,22 @@ Template.results.helpers({
     {
       return false;
     }
-  }
+  },
+
+    category : function(newid){
+
+        var test =  Categories.findOne({"id": newid});
+        if(test == undefined){
+            return null;
+        }
+        return test.name;
+    }
+
 });
+
+
+
+
 
 //pagination listeners
 Template.results.events({
