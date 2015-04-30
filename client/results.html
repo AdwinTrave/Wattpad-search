@@ -6,7 +6,7 @@
               <div id="img_box">
                 <img height="400" width="256" alt="bookCover" class="bookCover" src="{{cover}}">
               </div>
-              <h2>{{title}}</h2>
+              <h2><a href="{{url}}" class="storyLink">{{title}}</a></h2>
 
               <p class="subheader">By <a href="#">{{user.name}}</a></p>
               <p>Categories {{#each categories}}
@@ -19,7 +19,7 @@
                 {{/each}}</p>
               <p>Story ID: <span class = "label">{{id}}</span></p>
               <p>{{description}}</p>
-              <a href="{{url}}" class="button tiny wattpadLink">Read it on Wattpad &rarrlp;</a>
+              <!--<a href="{{url}}" class="button tiny wattpadLink">Read it on Wattpad &rarrlp;</a>-->
             </article>
           </div>
         {{/each}}

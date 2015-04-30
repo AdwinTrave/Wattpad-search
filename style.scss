@@ -67,7 +67,7 @@ legend{
     float: right;
     width: 20%;
     height: auto;
-    margin: 2px; 
+    margin: 2px;
 }
 
 .bookCover{
@@ -89,4 +89,12 @@ legend{
 }
 .story{
     min-height: 300px;
+}
+.storyLink{
+  color: #008CBA;
+  text-decoration: underline;
+}
+.storyLink:hover{
+  color: #F59900;
+  text-decoration: underline;
 }
