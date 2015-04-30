@@ -32,8 +32,6 @@ Meteor.methods({
             categories.some(function(cat)
             {
                 //console.log(cat);
-
-                //@todo if the query hints to fanfiction then don't remove the word(s) from query unless it is "fanfiction" or "fan fiction" as the specific fan fiction terms will be needed later
                 //@todo stemm and evaluate how stemmed terms effect the search
 
                 //check if the category is a phrase (2+words)
@@ -109,11 +107,15 @@ Meteor.methods({
                                 }
                             }
 
-                            if(!match)
+                            if(!match || cat.id == 6)
                             {
-                                if(!found){
+                                if(!found || cat.id == 6){
                                     //console.log("adding2 " + queryArray[i]);
-                                    queryOutput.push(queryArray[i]);
+                                    if(queryOutput.indexOf(token) != -1)
+                                    {
+                                        queryOutput.push(queryArray[i]);
+                                    }
+
                                 }
                             }
                             else
@@ -122,10 +124,8 @@ Meteor.methods({
                                 //add category to search
                                 searchCategories = addSearchCategory(cat.id, searchCategories);
                                 //remove all the words from the queryArray to prevent processing
-                                //unless its fanfiction term
-                                if( found && !(cat.id == 6))
+                                if( found )
                                 {
-                                    //console.log("removing2 " + queryArray[i]);
                                     queryOutput.splice(index, 1);
                                 }
 
