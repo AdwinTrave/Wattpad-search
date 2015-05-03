@@ -4,6 +4,10 @@
                                                      stories found.</div></div>
   {{/if}}
   {{#if stories}}
+    <div class="row">
+      <button id="prevPage" class="button radius left {{#if prevDisabled}}disabled{{/if}}">Previous</button>
+      <button id="nextPage" class="button radius right {{#if nextDisabled}}disabled{{/if}}">Next</button>
+    </div>
       {{#each stories}}
         <div class="box story content medium-12">
           <article class="post">
