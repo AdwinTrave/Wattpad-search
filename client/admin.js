@@ -41,11 +41,7 @@ function setAuthorization(xhr)
 {
 	xhr.setRequestHeader("Authorization", "rFfM7b1aWcKlgwAqxfmshKKLl91LYJX49rA0HsiqJQBp");
 }
-if (Meteor.isServer) {
-	Meteor.startup(function () {
-		// code to run on server at startup
-	});
-}
+
 function getStories(category)
 {
 	//gettin 100 at one time, this might freeze a browser for a little while
