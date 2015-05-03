@@ -31,22 +31,32 @@ Template.results.helpers({
       return false;
     }
   },
+  category: function(newid){
 
-    category : function(newid){
-
-        var test =  Categories.findOne({"id": newid});
-        if(test == undefined){
-            return null;
-        }
-        return test.name;
+      var test =  Categories.findOne({"id": newid});
+      if(test == undefined){
+          return null;
+      }
+      return test.name;
+  },
+  currentPage: function(){
+    return Session.get("page");
+  },
+  totalPages: function(){
+    return Session.get("totalPages");
+  },
+  resultsTotal: function(){
+    var res = Session.get("results");
+    return res.length;
+  },
+  showStats: function(){
+    if(Session.get("results") == null)
+    {
+      return false;
     }
-
+    return true;
+  }
 });
-
-
-
-
-
 //pagination listeners
 Template.results.events({
   'click #nextPage': function(event){
