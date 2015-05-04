@@ -102,16 +102,16 @@ Template.search.events({
     Meteor.apply("tokenize", [query], {wait: true, onResultReceived: function(error, results){
       //console.log("0: " + results);
       //step 1: identify category and remove those words
-      Meteor.apply("identifyCategories", [results], {wait: true, onResultReceived: function(error, results){
+      Meteor.apply("identifyCategories", [results, false], {wait: true, onResultReceived: function(error, results){
         //split the categoriesResults into the new query and the categories
         //console.log("1: " + results);
         var queryArray = categoriesResultsSplit(results);
         //console.log(queryArray);
         //step 2: remove stop words (and Porter-Stemmer)
-        Meteor.apply("stopWordsAndStemmer", [queryArray], {wait: true, onResultReceived: function(error, results){
+        Meteor.apply("stopWordsAndStemer", [queryArray], {wait: true, onResultReceived: function(error, results){
          //console.log("2: " + results);
          //step 2.5: look again for categories
-         Meteor.apply("identifyCategories", [results], {wait: true, onResultReceived: function(error, results){
+         Meteor.apply("identifyCategories", [results, true], {wait: true, onResultReceived: function(error, results){
            queryArray = categoriesResultsSplit(results);
            console.log(queryArray);
            //console.log("2.5 " + results);
