@@ -257,7 +257,6 @@ Meteor.methods({
             //lastly rank by description - 10 points
             //@todo look for more instances and evaluate how relevant they are
 
-
             var evalDesc = description.indexOf(tokens[k]);
             //console.log(evalDesc);
 
