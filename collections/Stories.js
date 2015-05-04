@@ -73,6 +73,7 @@ if(Meteor.isServer)
       //console.log(storyObject);
       if(Stories.findOne({id: storyObject.id}) === undefined)
       {
+        /*
         //there is no entry add the story to DB
         if(storyObject.language === undefined)
         {
@@ -91,7 +92,11 @@ if(Meteor.isServer)
           else {
             console.log("Not an English story, skipping.");
           }
-        }
+        }*/
+
+        //needs to be removed if the API starts returning more info again (use the commented code above)
+        Stories.insert(storyObject);
+
       }
       else
       {
